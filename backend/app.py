@@ -60,6 +60,25 @@ def create_habit():
 def hello_world():
     return "Hello, this is the Habit Hero backend!"
 
+
+# A route to delete a specific habit by its ID
+@app.route("/api/habits/<int:habit_id>", methods=['DELETE'])
+def delete_habit(habit_id):
+    # Find the habit in the database by its ID
+    habit = Habit.query.get(habit_id)
+
+    # If the habit doesn't exist, return a 404 Not Found error
+    if habit is None:
+        return jsonify({'error': 'Habit not found'}), 404
+
+    # Remove the habit from the database session
+    db.session.delete(habit)
+    # Commit the session to save the changes
+    db.session.commit()
+
+    # Return a success message
+    return jsonify({'message': 'Habit deleted successfully'}), 200
+
 # This line allows you to run the app directly from the command line
 if __name__ == "__main__":
     app.run(debug=True)
